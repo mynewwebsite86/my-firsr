@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Marketplace</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+
+
+
+
+<body class="container mt-4">
+
+<!-- NAVBAR -->
+<nav class="mb-4">
+
+    {% if user.is_authenticated %}
+        Welcome <b>{{ user.username }}</b> |
+        <a href="/orders/">Orders</a> |
+        <a href="/cart/">Cart</a> |
+        <a href="/logout/">Logout</a>
+        <a href="{% url 'sell_product' %}">Sell</a>
+        <a href="{% url 'notifications' %}">Notifications</a>
+        <a href="{% url 'seller_dashboard' %}">Dashboard</a> |
+    {% else %}
+        <a href="/login/">Login</a> |
+        <a href="/register/">Register</a>
+    {% endif %}
+
+</nav>
+
+
+<!-- SEARCH BAR -->
+<form method="GET" class="mb-3">
+    <input type="text" name="q" placeholder="Search products..." class="form-control w-50 d-inline">
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+
+<!-- CATEGORY FILTER -->
+<h5>Categories</h5>
+
+<div class="mb-4">
+    <a href="/" class="btn btn-outline-dark btn-sm">All</a>
+
+    {% for cat in categories %}
+        <a href="/?category={{ cat }}" class="btn btn-outline-secondary btn-sm">
+            {{ cat }}
+        </a>
+    {% endfor %}
+</div>
+
+
+<!-- PRODUCTS GRID -->
+<div class="row">
+
+{% for product in products %}
+<div class="col-md-4">
+
+<div class="card mb-4 shadow-sm">
+
+<div class="card-body">
+
+    {% if product.image %}
+<img src="{{ product.image.url }}" class="card-img-top">
+{% endif %}
+
+<h5 class="card-title">
+<a href="{% url 'product_detail' product.id %}">
+{{ product.title }}
+</a>
+</h5>
+
+<p class="card-text">{{ product.description }}</p>
+
+<p><strong>${{ product.price }}</strong></p>
+<p>Stock: {{ product.stock }}</p>
+<a href="{% url 'add_to_cart' product.id %}" class="btn btn-dark">
+Buy Now
+</a>
+
+{% if product.stock > 0 %}
+<a href="{% url 'add_to_cart' product.id %}" class="btn btn-dark">
+Buy Now
+</a>
+{% else %}
+<span class="badge bg-danger">Out of Stock</span>
+{% endif %}
+
+</div>
+</div>
+
+</div>
+{% endfor %}
+
+</div>
+
+
+</body>
+</html>
